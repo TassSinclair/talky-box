@@ -1,5 +1,5 @@
 IMAGE_NAME=talky-box
-VOLUME_MOUNTS=-v `pwd`/data:/src
+VOLUME_MOUNTS=-v `pwd`/data:/data
 build:
 		docker build -t ${IMAGE_NAME} .
 run:
