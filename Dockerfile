@@ -4,7 +4,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* \
   && echo "(set! voice_default 'voice_cmu_us_slt_arctic_hts)" >> /etc/festival.scm \
   && pip3 install paho-mqtt
-ENV MQTT_HOST="mqtt.eclipse.org"
+ENV MQTT_HOST="localhost"
 ENV MQTT_PORT="1883"
 ENV MQTT_SUBSCRIBE_TOPIC="talky-box/post/say"
 CMD ["python3", "/data/go.py"]
