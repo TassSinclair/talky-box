@@ -7,5 +7,5 @@ RUN apt-get update \
 RUN echo "defaults.pcm.card 2\ndefaults.ctl.card 2" > /etc/asound.conf
 ENV MQTT_HOST="localhost"
 ENV MQTT_PORT="1883"
-ENV MQTT_SUBSCRIBE_TOPIC="talky-box/post/say"
+ENV MQTT_SUBSCRIBE_TOPIC_ROOT="talky-box"
 CMD ["python3", "/data/go.py"]
