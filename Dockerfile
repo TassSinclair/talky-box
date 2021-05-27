@@ -7,7 +7,8 @@ RUN apt-get update \
   && mv /root/festival/lib/voices/* /usr/share/festival/voices/ \
   && echo "(set! voice_default 'voice_cmu_us_awb_cg)" >> /etc/festival.scm \
   && pip3 install paho-mqtt
-RUN echo "defaults.pcm.card 2\ndefaults.ctl.card 2" > /etc/asound.conf
+ENV APLAY_DEVICE="sysdefault:CARD=PCH"
+RUN echo "(Parameter.set 'Audio_Command \"aplay -q -c 1 -t raw -f s16 -D ${APLAY_DEVICE} -r \$SR \$FILE\")" >> /etc/festival.scm
 ENV MQTT_HOST="localhost"
 ENV MQTT_PORT="1883"
 ENV MQTT_SUBSCRIBE_TOPIC_ROOT="talky-box"
