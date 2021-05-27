@@ -5,4 +5,4 @@ build:
 run:
 		docker run ${VOLUME_MOUNTS} --device /dev/snd -it --rm --name ${IMAGE_NAME} --privileged ${IMAGE_NAME}
 debug:
-		docker run ${VOLUME_MOUNTS} --device /dev/snd -it --rm --name ${IMAGE_NAME} --privileged ${IMAGE_NAME} /bin/sh
+		docker run ${VOLUME_MOUNTS} --device /dev/snd -it --rm --name ${IMAGE_NAME} --privileged ${IMAGE_NAME} /bin/bash
