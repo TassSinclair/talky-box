@@ -4,28 +4,39 @@ from subprocess import Popen, PIPE
 import json
 import paho.mqtt.client as mqtt
 
-# festival_server = Popen(["festival", "--server"])
-# print(festival_server.pid)
-# subprocess.call(["festival_client", "--ttw", "--output", "/src/egg.wav"])
-# festival_server.terminate()
-
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code {}".format(rc))
-    client.subscribe(os.environ.get('MQTT_SUBSCRIBE_TOPIC'))
+    print("connected with result code {}".format(rc))
+    print("subscribing to topic root {}".format(os.environ.get('MQTT_SUBSCRIBE_TOPIC_ROOT')))
+    client.subscribe("{}/#".format(os.environ.get('MQTT_SUBSCRIBE_TOPIC_ROOT')))
 
 def on_message(client, userdata, msg):
-    data = json.loads(msg.payload)
-    message = data["message"]
+    print("receieved message on topic {}".format(msg.topic))
+    if msg.topic == "{}/post/say".format(os.environ.get('MQTT_SUBSCRIBE_TOPIC_ROOT')):
+        on_say(json.loads(msg.payload))
+    elif msg.topic == "{}/post/play".format(os.environ.get('MQTT_SUBSCRIBE_TOPIC_ROOT')):
+        on_play(json.loads(msg.payload))
+
+def on_say(data):
+    print(data)
     if "playSoundBefore" in data:
-         play_sound_before = data["playSoundBefore"]
-         subprocess.run(["aplay", "/data/{}.wav".format(play_sound_before)])
-    # text2wave = Popen(["text2wave", "-o", "/src/{}.wav".format(data["output"])], stdin=PIPE)
-    # text2wave.communicate(input=message.encode("utf-8"))
-    festival = Popen(["festival", "--tts",], stdin=PIPE)
-    festival.communicate(input = message.encode("utf-8"))
+        play_sound_before = data["playSoundBefore"]
+        subprocess.run(["aplay", "/data/{}.wav".format(play_sound_before)])
+    if "message" in data:
+        message = data["message"]
+        if bool(os.environ.get('DEBUG')) is True:
+            text2wave = Popen(["text2wave", "-o", "/data/debug.wav"], stdin=PIPE)
+            text2wave.communicate(input = message.encode("utf-8"))
+        else:
+            festival = Popen(["festival", "--tts"], stdin=PIPE)
+            festival.communicate(input = message.encode("utf-8"))
     if "playSoundAfter" in data:
-         play_sound_before = data["playSoundAfter"]
-         subprocess.run(["aplay", "/data/{}.wav".format(play_sound_before)])
+        play_sound_before = data["playSoundAfter"]
+        subprocess.run(["aplay", "/data/{}.wav".format(play_sound_before)])
+
+def on_play(data):
+    if "play" in data:
+         play_sound = data["play"]
+         subprocess.run(["aplay", "/data/{}.wav".format(play_sound)])
 
 client = mqtt.Client()
 client.on_connect = on_connect
