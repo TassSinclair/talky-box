@@ -3,7 +3,7 @@ ADD http://festvox.org/packed/festival/2.5/voices/festvox_cmu_us_awb_cg.tar.gz /
 RUN apt-get update \
   && apt-get install -y festival festlex-cmu festlex-poslex python3 python3-pip \
   && rm -rf /var/lib/apt/lists/* \
-  && tar xf /root/festvox_*.tar.gz -C  \
+  && tar xf /root/festvox_*.tar.gz -C /root/ \
   && mv /root/festival/lib/voices/* /usr/share/festival/voices/ \
   && echo "(set! voice_default 'voice_cmu_us_awb_cg)" >> /etc/festival.scm \
   && pip3 install paho-mqtt
