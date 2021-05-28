@@ -19,7 +19,7 @@ def on_message(client, userdata, msg):
 def on_say(data):
     if "message" in data:
         message = data["message"]
-        subprocess.run(["flite", "-t", "'{}'".format(message), "-voice", "slt", "/data/out.wav"])
+        subprocess.run(["flite", "-t", "'{}'".format(message), "-voice", "awb", "/data/out.wav"])
     if "playSoundBefore" in data:
         play_sound_before = data["playSoundBefore"]
         subprocess.run(["aplay", "-D", os.environ.get('APLAY_DEVICE'), "/data/{}.wav".format(play_sound_before)])
