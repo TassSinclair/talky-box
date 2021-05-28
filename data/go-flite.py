@@ -1,10 +1,8 @@
 import os
 import subprocess
-from subprocess import Popen, PIPE
+import subprocess
 import json
 import paho.mqtt.client as mqtt
-
-festival = Popen(["festival"], stdin=PIPE)
 
 def on_connect(client, userdata, flags, rc):
     print("connected with result code {}".format(rc))
@@ -19,21 +17,22 @@ def on_message(client, userdata, msg):
         on_play(json.loads(msg.payload))
 
 def on_say(data):
-    if "playSoundBefore" in data:
-         play_sound_before = data["playSoundBefore"]
-         subprocess.run(["aplay", "-D", os.environ.get('APLAY_DEVICE'), "/data/{}.wav".format(play_sound_before)])
     if "message" in data:
         message = data["message"]
-        festival.stdin.writelines(["(SayText \"{}\")".format(message).encode("utf-8")])
-        festival.stdin.flush()
+        subprocess.run(["flite", "-t", "'{}'".format(message), "-voice", "slt", "/data/out.wav"])
+    if "playSoundBefore" in data:
+        play_sound_before = data["playSoundBefore"]
+        subprocess.run(["aplay", "-D", os.environ.get('APLAY_DEVICE'), "/data/{}.wav".format(play_sound_before)])
+    if "message" in data:
+        subprocess.run(["aplay", "-D", os.environ.get('APLAY_DEVICE'), "/data/out.wav"])
     if "playSoundAfter" in data:
-         play_sound_after = data["playSoundAfter"]
-         subprocess.run(["aplay", "-D", os.environ.get('APLAY_DEVICE'), "/data/{}.wav".format(play_sound_after)])
+        play_sound_after = data["playSoundAfter"]
+        subprocess.run(["aplay", "-D", os.environ.get('APLAY_DEVICE'), "/data/{}.wav".format(play_sound_after)])
 
 def on_play(data):
     if "play" in data:
-         play_sound = data["play"]
-         subprocess.run(["aplay", "-D", os.environ.get('APLAY_DEVICE'), "/data/{}.wav".format(play_sound)])
+        play_sound = data["play"]
+        subprocess.run(["aplay", "-D", os.environ.get('APLAY_DEVICE'), "/data/{}.wav".format(play_sound)])
 
 client = mqtt.Client()
 client.on_connect = on_connect
