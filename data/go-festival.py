@@ -4,7 +4,7 @@ from subprocess import Popen, PIPE
 import json
 import paho.mqtt.client as mqtt
 
-festival = Popen(["festival", "--tts"], stdin=PIPE)
+festival = Popen(["festival"], stdin=PIPE)
 
 def on_connect(client, userdata, flags, rc):
     print("connected with result code {}".format(rc))
