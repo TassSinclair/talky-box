@@ -15,4 +15,4 @@ RUN apt-get update \
 ENV MQTT_HOST="localhost"
 ENV MQTT_PORT="1883"
 ENV MQTT_SUBSCRIBE_TOPIC_ROOT="talky-box"
-CMD ["python3", "/data/go.py"]
+CMD ["python3", "/data/go-festival.py"]
